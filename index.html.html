@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="買い物リズム">
+<title>買い物リズム</title>
+<style>
+:root{--bg:#F4F7F2;--sf:#fff;--ink:#1c2b22;--sub:#66756b;--ln:#dfe6dc;--ac:#2E7D52;--aci:#fff;--wn:#c93d1f;--wnb:#fde9e3;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a15;--sf:#1b2620;--ink:#e8f0ea;--sub:#93a398;--ln:#2b3a31;--ac:#5cc08a;--aci:#0d1a12;--wn:#ff8a6b;--wnb:#3a2019;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a15;--sf:#1b2620;--ink:#e8f0ea;--sub:#93a398;--ln:#2b3a31;--ac:#5cc08a;--aci:#0d1a12;--wn:#ff8a6b;--wnb:#3a2019;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;padding-bottom:84px}
+main{max-width:560px;margin:0 auto;padding:0 14px}
+h1{font-size:22px;margin:18px 0 12px;letter-spacing:.02em}
+h3{font-size:13px;color:var(--sub);margin:18px 2px 6px;font-weight:600}
+[hidden]{display:none!important}
+form{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+input{font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.nm-in{flex:1 1 100%}.st-in{flex:1 1 90px}.n-in{width:84px}.d-in{flex:1 1 120px}
+button{font:inherit;color:var(--ink);cursor:pointer}
+.pri{background:var(--ac);color:var(--aci);border:0;border-radius:10px;padding:10px 16px;font-weight:700}
+.mic{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 14px}
+.seg{display:flex;background:var(--ln);border-radius:10px;padding:3px;margin:4px 0 2px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:7px;color:var(--sub)}
+.seg button.on{background:var(--sf);color:var(--ink);font-weight:700}
+.row{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:8px 8px 8px 10px;margin-bottom:6px}
+.row.done .nm{text-decoration:line-through;color:var(--sub)}
+.chk{width:28px;height:28px;flex:none;border-radius:50%;border:2px solid var(--ac);background:none;color:var(--aci);font-weight:700;line-height:1;padding:0}
+.done .chk{background:var(--ac)}
+.em{font-size:22px;width:28px;text-align:center;flex:none}
+.nm{flex:1;min-width:0;word-break:break-all}
+small{color:var(--sub);font-size:12px}
+.tag{background:var(--bg);border-radius:6px;padding:1px 6px}
+.ic{background:none;border:0;color:var(--sub);padding:8px;font-size:15px}
+.find{display:flex;gap:8px;margin:-2px 0 8px 48px}
+.find a{color:var(--ac);font-size:14px;font-weight:600;border:1px solid var(--ln);border-radius:8px;padding:4px 10px;text-decoration:none;background:var(--sf)}
+.empty{color:var(--sub);text-align:center;padding:36px 10px;font-size:14px}
+.ban{background:var(--wnb);color:var(--wn);border-radius:12px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
+.ban button{margin-left:auto;background:var(--wn);color:var(--wnb);border:0;border-radius:8px;padding:6px 10px;font-weight:700}
+.stat{font-size:13px;color:var(--sub)}.stat.due{color:var(--wn);font-weight:700}
+.sm{border:1px solid var(--ln);background:var(--sf);border-radius:8px;padding:6px 10px;font-size:13px}
+.sm.go{background:var(--ac);color:var(--aci);border-color:var(--ac);font-weight:700}
+.sm:disabled{opacity:.5}
+.clr{display:block;margin:14px auto 0;background:none;border:0;color:var(--sub);font-size:13px;text-decoration:underline}
+#msg{font-size:13px;color:var(--sub);min-height:20px;margin-bottom:4px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;border:0;background:none;padding:12px 0;color:var(--sub);font-weight:600}
+nav button.on{color:var(--ac)}
+.lbl{font-size:12px;color:var(--sub);margin:0 2px 2px}
+</style>
+</head>
+<body>
+<main>
+<h1>買い物リズム</h1>
+<div id="msg" role="status"></div>
+
+<section id="v-list">
+  <form id="f-add">
+    <input class="nm-in" id="a-name" placeholder="買うもの(例: 牛乳)" autocomplete="off" required>
+    <input class="st-in" id="a-store" placeholder="お店(任意)" list="stores" autocomplete="off">
+    <input class="n-in" id="a-qty" placeholder="数量" autocomplete="off">
+    <button class="pri" type="submit">追加</button>
+    <button class="mic" type="button" data-a="voice" aria-label="音声で追加">🎤</button>
+  </form>
+  <div class="seg"><button data-m="store">お店ごと</button><button data-m="cat">売り場順</button></div>
+  <div id="list"></div>
+</section>
+
+<section id="v-stock" hidden>
+  <div id="ban"></div>
+  <form id="f-stock">
+    <input class="nm-in" id="s-name" placeholder="日用品(例: トイレットペーパー)" autocomplete="off" required>
+    <div style="flex:1 1 120px"><div class="lbl">買う間隔(日)</div><input id="s-int" type="number" min="1" value="30" style="width:100%"></div>
+    <div style="flex:1 1 150px"><div class="lbl">最後に買った日</div><input id="s-last" type="date" style="width:100%"></div>
+    <button class="pri" type="submit" style="align-self:flex-end">登録</button>
+  </form>
+  <div id="stock"></div>
+</section>
+</main>
+<datalist id="stores"></datalist>
+<nav><button data-t="list">買い物リスト</button><button data-t="stock">日用品ストック</button></nav>
+
+<script>
+const K='kaimono-rhythm-v1';
+let S={items:[],stock:[],mode:'store',tab:'list'};
+try{const r=localStorage.getItem(K);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+S.find=null;
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const days=(a,b)=>Math.round((new Date(b+'T12:00')-new Date(a+'T12:00'))/864e5);
+const CATS=[
+['野菜・果物','🥬',/野菜|にんじん|人参|玉ねぎ|たまねぎ|トマト|きゅうり|キャベツ|レタス|じゃがいも|ねぎ|ほうれん草|なす|ピーマン|大根|りんご|バナナ|みかん|いちご|ブロッコリー|もやし|きのこ|しいたけ|果物/],
+['肉・魚','🥩',/肉|豚|鶏|牛(?!乳)|ひき|魚|鮭|さば|ぶり|えび|刺身|ベーコン/],
+['乳製品・卵','🥛',/牛乳|ヨーグルト|チーズ|卵|たまご|バター/],
+['豆腐・加工品','🥢',/豆腐|納豆|ハム|ソーセージ|こんにゃく|練り物|かまぼこ/],
+['主食・乾物','🍚',/米|パン|麺|パスタ|うどん|そば|シリアル|のり|海苔/],
+['調味料','🧂',/醤油|しょうゆ|味噌|みそ|塩|砂糖|油|酢|ソース|マヨ|ケチャップ|だし/],
+['飲料・お菓子','🥤',/お茶|水|ジュース|コーヒー|ビール|酒|お菓子|チョコ|アイス/],
+['日用品','🧻',/トイレット|ティッシュ|洗剤|シャンプー|リンス|歯|ゴミ袋|ラップ|柔軟剤|石け|ソープ|スポンジ|電池/],
+['その他','🛒',/$^/]];
+const EM=[[/にんじん|人参/,'🥕'],[/玉ねぎ|たまねぎ/,'🧅'],[/トマト/,'🍅'],[/きゅうり/,'🥒'],[/キャベツ|レタス/,'🥬'],[/じゃがいも/,'🥔'],[/りんご/,'🍎'],[/バナナ/,'🍌'],[/みかん/,'🍊'],[/いちご/,'🍓'],[/牛乳/,'🥛'],[/ヨーグルト/,'🥣'],[/チーズ/,'🧀'],[/卵|たまご/,'🥚'],[/パン/,'🍞'],[/米/,'🍚'],[/麺|パスタ|うどん/,'🍝'],[/魚|鮭|さば/,'🐟'],[/えび/,'🍤'],[/肉|豚|牛|鶏|ひき/,'🥩'],[/トイレット/,'🧻'],[/洗剤|柔軟剤/,'🧴'],[/シャンプー|リンス/,'🧴'],[/歯/,'🪥'],[/コーヒー/,'☕'],[/ビール/,'🍺']];
+const catOf=n=>{const i=CATS.findIndex(c=>c[2].test(n));return i<0?CATS.length-1:i};
+const emoji=n=>{const e=EM.find(x=>x[0].test(n));return e?e[1]:CATS[catOf(n)][1]};
+const msg=t=>{$('#msg').textContent=t;clearTimeout(msg.t);msg.t=setTimeout(()=>$('#msg').textContent='',4000)};
+
+function addItem(name,store,qty,sid){
+  name=name.trim();if(!name)return;
+  S.items.push({id:uid(),name,store:(store||'').trim(),qty:(qty||'').trim(),done:false,sid:sid||null});
+}
+function bought(sid){
+  const s=S.stock.find(x=>x.id===sid);if(!s)return;
+  const gap=days(s.last,today());
+  if(gap>=3)s.interval=Math.max(1,Math.round((s.interval+gap)/2));
+  s.last=today();
+}
+const left=s=>s.interval-days(s.last,today());
+const inList=s=>S.items.some(i=>i.sid===s.id&&!i.done);
+
+function row(i){
+  const q=encodeURIComponent(i.name);
+  return `<div class="row${i.done?' done':''}"><button class="chk" data-a="tog" data-id="${i.id}" aria-label="チェック">${i.done?'✓':''}</button><span class="em">${emoji(i.name)}</span><div class="nm">${esc(i.name)}${i.qty?` <small>${esc(i.qty)}</small>`:''}${S.mode==='cat'&&i.store?` <small class="tag">${esc(i.store)}</small>`:''}${i.sid?' <small class="tag">定期</small>':''}</div><button class="ic" data-a="find" data-id="${i.id}" aria-label="ネットで探す">🔍</button><button class="ic" data-a="del" data-id="${i.id}" aria-label="削除">✕</button></div>`+
+  (S.find===i.id?`<div class="find"><a href="https://www.amazon.co.jp/s?k=${q}" target="_blank" rel="noopener">Amazon</a><a href="https://search.rakuten.co.jp/search/mall/${q}/" target="_blank" rel="noopener">楽天市場</a></div>`:'');
+}
+function renderList(){
+  const open=S.items.filter(i=>!i.done),done=S.items.filter(i=>i.done),g={};
+  open.forEach(i=>{const k=S.mode==='store'?(i.store||'お店未指定'):catOf(i.name);(g[k]=g[k]||[]).push(i)});
+  const keys=Object.keys(g);if(S.mode==='cat')keys.sort((a,b)=>a-b);
+  let h=keys.map(k=>`<h3>${S.mode==='cat'?CATS[k][0]:esc(k)}</h3>`+g[k].map(row).join('')).join('');
+  if(!open.length)h=`<div class="empty">買うものを追加しましょう。<br>🎤を押して「スーパーでヨーグルトとにんじん3本」のように話しても入ります。</div>`;
+  if(done.length)h+=`<h3>買った(${done.length})</h3>`+done.map(row).join('')+`<button class="clr" data-a="clear">買ったものを消す</button>`;
+  $('#list').innerHTML=h;
+}
+function renderStock(){
+  const arr=S.stock.slice().sort((a,b)=>left(a)-left(b));
+  const due=arr.filter(s=>left(s)<=3&&!inList(s));
+  $('#ban').innerHTML=due.length?`<div class="ban">そろそろ ${due.length}件<button data-a="dueall">まとめてリストへ</button></div>`:'';
+  $('#stock').innerHTML=arr.length?arr.map(s=>{const l=left(s);
+    const st=l<0?`${-l}日超過`:l===0?'今日あたり':`あと${l}日`;
+    return `<div class="row"><span class="em">${emoji(s.name)}</span><div class="nm">${esc(s.name)}<br><small class="stat${l<=3?' due':''}">${st}</small> <small>約${s.interval}日ごと</small></div><button class="sm${l<=3&&!inList(s)?' go':''}" data-a="toList" data-id="${s.id}"${inList(s)?' disabled':''}>${inList(s)?'リスト入り':'リストへ'}</button><button class="sm" data-a="buy" data-id="${s.id}">買った</button><button class="ic" data-a="sdel" data-id="${s.id}" aria-label="削除">✕</button></div>`}).join(''):`<div class="empty">トイレットペーパーや洗剤など、定期的に買うものを登録すると、買う時期が近づいたらお知らせします。買うたびに間隔が自動で調整されます。</div>`;
+}
+function render(){
+  $('#v-list').hidden=S.tab!=='list';$('#v-stock').hidden=S.tab!=='stock';
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab));
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.m===S.mode));
+  $('#stores').innerHTML=[...new Set(S.items.map(i=>i.store).filter(Boolean))].map(s=>`<option value="${esc(s)}">`).join('');
+  renderList();renderStock();save();
+}
+function parseVoice(t){
+  t=t.replace(/^(帰りに|あと|それと)/,'');let store='';
+  const m=t.match(/^(.*?(?:スーパー|ドラッグストア|コンビニ|薬局|コストコ|マート|店))で(.+)$/);
+  if(m){store=m[1];t=m[2]}
+  const ps=t.split(/と|、|，|,|\s+/).filter(Boolean);
+  ps.forEach(p=>{const q=p.match(/^(.+?)(\d+.{0,2})$/);addItem(q?q[1]:p,store,q?q[2]:'')});
+  msg(`${ps.length}件追加しました:${ps.join('、')}`);render();
+}
+function voice(){
+  const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!R){msg('このブラウザは音声入力に対応していません。キーボードのマイクを使ってください。');return}
+  try{const r=new R();r.lang='ja-JP';r.onresult=e=>parseVoice(e.results[0][0].transcript);r.onerror=()=>msg('音声を聞き取れませんでした。');r.start();msg('話してください…')}catch(e){msg('音声入力を開始できませんでした。')}
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-t]');if(t){S.tab=t.dataset.t;render();return}
+  const m=e.target.closest('[data-m]');if(m){S.mode=m.dataset.m;render();return}
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a,id=b.dataset.id,it=S.items.find(x=>x.id===id),st=S.stock.find(x=>x.id===id);
+  if(a==='tog'&&it){it.done=!it.done;if(it.done&&it.sid)bought(it.sid)}
+  else if(a==='del')S.items=S.items.filter(x=>x.id!==id);
+  else if(a==='find')S.find=S.find===id?null:id;
+  else if(a==='clear')S.items=S.items.filter(x=>!x.done);
+  else if(a==='voice'){voice();return}
+  else if(a==='toList'&&st)addItem(st.name,'','',st.id);
+  else if(a==='buy'&&st){bought(st.id);S.items.forEach(i=>{if(i.sid===st.id&&!i.done)i.done=true})}
+  else if(a==='sdel')S.stock=S.stock.filter(x=>x.id!==id);
+  else if(a==='dueall')S.stock.filter(s=>left(s)<=3&&!inList(s)).forEach(s=>addItem(s.name,'','',s.id));
+  render();
+});
+$('#f-add').addEventListener('submit',e=>{e.preventDefault();addItem($('#a-name').value,$('#a-store').value,$('#a-qty').value);$('#a-name').value='';$('#a-qty').value='';render();$('#a-name').focus()});
+$('#s-last').value=today();
+$('#f-stock').addEventListener('submit',e=>{e.preventDefault();const n=$('#s-name').value.trim();if(!n)return;
+  S.stock.push({id:uid(),name:n,interval:Math.max(1,parseInt($('#s-int').value)||30),last:$('#s-last').value||today()});
+  $('#s-name').value='';render()});
+render();
+</script>
+</body>
+</html>
