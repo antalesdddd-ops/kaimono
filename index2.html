@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="買い物リズム">
+<title>買い物リズム</title>
+<style>
+:root{--bg:#F4F7F2;--sf:#fff;--ink:#1c2b22;--sub:#66756b;--ln:#dfe6dc;--ac:#2E7D52;--aci:#fff;--wn:#c93d1f;--wnb:#fde9e3;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a15;--sf:#1b2620;--ink:#e8f0ea;--sub:#93a398;--ln:#2b3a31;--ac:#5cc08a;--aci:#0d1a12;--wn:#ff8a6b;--wnb:#3a2019;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a15;--sf:#1b2620;--ink:#e8f0ea;--sub:#93a398;--ln:#2b3a31;--ac:#5cc08a;--aci:#0d1a12;--wn:#ff8a6b;--wnb:#3a2019;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;padding-bottom:84px}
+main{max-width:560px;margin:0 auto;padding:0 14px}
+h1{font-size:22px;margin:18px 0 12px;letter-spacing:.02em}
+h3{font-size:13px;color:var(--sub);margin:18px 2px 6px;font-weight:600}
+[hidden]{display:none!important}
+form{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+input{font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.nm-in{flex:1 1 100%}.st-in{flex:1 1 90px}.n-in{width:84px}.d-in{flex:1 1 120px}
+button{font:inherit;color:var(--ink);cursor:pointer}
+.pri{background:var(--ac);color:var(--aci);border:0;border-radius:10px;padding:10px 16px;font-weight:700}
+.mic{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 14px}
+.seg{display:flex;background:var(--ln);border-radius:10px;padding:3px;margin:4px 0 2px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:7px;color:var(--sub)}
+.seg button.on{background:var(--sf);color:var(--ink);font-weight:700}
+.row{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:8px 8px 8px 10px;margin-bottom:6px}
+.row.done .nm{text-decoration:line-through;color:var(--sub)}
+.chk{width:28px;height:28px;flex:none;border-radius:50%;border:2px solid var(--ac);background:none;color:var(--aci);font-weight:700;line-height:1;padding:0}
+.done .chk{background:var(--ac)}
+.em{font-size:22px;width:28px;text-align:center;flex:none}
+.nm{flex:1;min-width:0;word-break:break-all}
+small{color:var(--sub);font-size:12px}
+.tag{background:var(--bg);border-radius:6px;padding:1px 6px}
+.ic{background:none;border:0;color:var(--sub);padding:8px;font-size:15px}
+.find{display:flex;gap:8px;margin:-2px 0 8px 48px}
+.find a{color:var(--ac);font-size:14px;font-weight:600;border:1px solid var(--ln);border-radius:8px;padding:4px 10px;text-decoration:none;background:var(--sf)}
+.empty{color:var(--sub);text-align:center;padding:36px 10px;font-size:14px}
+.ban{background:var(--wnb);color:var(--wn);border-radius:12px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
+.ban button{margin-left:auto;background:var(--wn);color:var(--wnb);border:0;border-radius:8px;padding:6px 10px;font-weight:700}
+.stat{font-size:13px;color:var(--sub)}.stat.due{color:var(--wn);font-weight:700}
+.sm{border:1px solid var(--ln);background:var(--sf);border-radius:8px;padding:6px 10px;font-size:13px}
+.sm.go{background:var(--ac);color:var(--aci);border-color:var(--ac);font-weight:700}
+.sm:disabled{opacity:.5}
+.clr{display:block;margin:14px auto 0;background:none;border:0;color:var(--sub);font-size:13px;text-decoration:underline}
+#msg{font-size:13px;color:var(--sub);min-height:20px;margin-bottom:4px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;border:0;background:none;padding:12px 0;color:var(--sub);font-weight:600}
+nav button.on{color:var(--ac)}
+.lbl{font-size:12px;color:var(--sub);margin:0 2px 2px}
+h2{font-size:15px;margin:20px 2px 4px;color:var(--wn)}
+h2.lt{color:var(--sub)}
+.chip{display:flex;align-items:center;gap:4px;border:1px solid var(--ln);background:var(--sf);border-radius:10px;padding:0 10px;font-size:14px;cursor:pointer}
+.chip input{accent-color:var(--wn);width:16px;height:16px}
+.pri-b{background:none;border:0;padding:8px;font-size:16px;opacity:.3}
+.pri-b.on{opacity:1}
+.stop{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:10px;margin-bottom:10px}
+.stop.fin{opacity:.55}
+.sh{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--ac);color:var(--aci);font-weight:700;display:grid;place-items:center;flex:none;font-size:14px}
+.sh b{flex:1;min-width:0;word-break:break-all}
+.stop .row{border:0;background:var(--bg)}
+.mic.has{border-color:var(--ac)}
+#hist{background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:8px 10px;margin-bottom:10px}
+.hl{display:flex;flex-wrap:wrap;gap:6px}
+.hc{display:inline-flex;align-items:center;border:1px solid var(--ln);background:var(--sf);border-radius:16px}
+.hc button{border:0;background:none;color:var(--ink);padding:6px 4px 6px 12px;font-size:14px}
+.hc .hx{color:var(--sub);padding:6px 10px 6px 4px;font-size:13px}
+.ivb{flex:1;overflow:auto;-webkit-overflow-scrolling:touch}
+.qt{display:flex;align-items:center;gap:8px;margin-top:4px}
+.qb{width:32px;height:32px;border-radius:50%;border:1px solid var(--ln);background:var(--bg);font-size:17px;line-height:1;padding:0}
+.qn{min-width:22px;text-align:center;font-weight:700}
+#cv{z-index:10!important}
+.cc{border:1px solid var(--ln);background:var(--sf);border-radius:12px;padding:10px 14px;font-size:15px}
+.cc.on{border-color:var(--ac);background:var(--ac);color:var(--aci);font-weight:700}
+.hc .hn{padding:9px 14px;min-width:56px;font-size:15px}
+#c-emo{width:64px;text-align:center}
+#c-name{flex:1}
+.cl{padding:9px 6px 9px 14px;font-size:15px}
+#f-cat{margin:8px 0 12px}#c-emo{width:68px;text-align:center}#c-name{flex:1 1 140px}
+.bh button.on{background:var(--ac);color:var(--aci);border-color:var(--ac)}
+.row{gap:6px}.row .ic,.row .pri-b{padding:6px 4px}
+#mini{position:fixed;z-index:8;width:150px;background:var(--sf);border:1.5px solid var(--ac);border-radius:12px;padding:8px 10px;box-shadow:0 4px 16px rgba(0,0,0,.2);touch-action:none;user-select:none;-webkit-user-select:none}
+#mini b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mi-p{color:var(--sub);font-size:12px;max-height:3.6em;overflow:hidden;margin-top:2px;white-space:pre-wrap;line-height:1.2}
+#big,#iv,#cv{position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center}
+#big .bg,#iv .bg,#cv .bg{background:var(--sf);width:100%;max-width:560px;height:62%;border-radius:0 0 18px 18px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;display:flex;flex-direction:column;gap:8px}
+.bh{display:flex;align-items:center;gap:8px}
+.bh b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bh button{border:1px solid var(--ln);background:var(--bg);border-radius:8px;padding:6px 10px;font-size:13px}
+#bi-ta{flex:1;resize:none;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.chips button{border:1px dashed var(--ac);background:none;color:var(--ac);border-radius:16px;padding:6px 12px;font-size:14px}
+.maps{display:block;text-align:center;background:var(--ac);color:var(--aci);border-radius:12px;padding:12px;font-weight:700;text-decoration:none;margin:12px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>買い物リズム</h1>
+<div id="msg" role="status"></div>
+
+<section id="v-list">
+  <form id="f-add">
+    <input class="nm-in" id="a-name" placeholder="買うもの(例: 牛乳)" autocomplete="off" required>
+    <input class="st-in" id="a-store" placeholder="お店・場所(任意)" list="stores" autocomplete="off">
+    <input class="n-in" id="a-qty" placeholder="数量" autocomplete="off">
+    <label class="chip"><input type="checkbox" id="a-now">⚡すぐ</label>
+    <button class="pri" type="submit">追加</button>
+    <button class="mic" type="button" data-a="voice" aria-label="音声で追加">🎤</button>
+    <button class="mic" id="memo-btn" type="button" data-a="memo" aria-label="メモ">📝 メモ</button>
+    <button class="mic" type="button" data-a="ihist" aria-label="買うものの履歴">🕘</button>
+    <button class="mic" id="cat-btn" type="button" data-a="cform" aria-label="種類を選ぶ">🏷 種類</button>
+  </form>
+  <div class="seg"><button data-m="store">お店ごと</button><button data-m="cat">種類別</button></div>
+  <div id="list"></div>
+</section>
+
+<section id="v-stock" hidden>
+  <div id="ban"></div>
+  <form id="f-stock">
+    <input class="nm-in" id="s-name" placeholder="日用品(例: トイレットペーパー)" autocomplete="off" required>
+    <div style="flex:1 1 120px"><div class="lbl">買う間隔(日)</div><input id="s-int" type="number" min="1" value="30" style="width:100%"></div>
+    <div style="flex:1 1 150px"><div class="lbl">最後に買った日</div><input id="s-last" type="date" style="width:100%"></div>
+    <button class="pri" type="submit" style="align-self:flex-end">登録</button>
+  </form>
+  <div id="stock"></div>
+</section>
+
+<section id="v-route" hidden>
+  <form id="f-route">
+    <input class="nm-in" id="r-name" placeholder="今日行く場所を追加(例: イオン 〇〇店、郵便局)" autocomplete="off">
+    <button class="pri" type="submit">追加</button>
+  </form>
+  <div id="route"></div>
+</section>
+</main>
+<div id="mini" hidden><b id="mi-t">📝 メモ</b><div id="mi-p"></div></div>
+<div id="big" hidden><div class="bg"><div class="bh"><b id="bi-t">📝 メモ</b><button data-a="mmin">小さくする</button><button data-a="mclose">閉じる</button></div><textarea id="bi-ta" placeholder="自由にメモできます"></textarea></div></div>
+<div id="cv" hidden><div class="bg"><div class="bh"><b id="cv-t">🏷 種類を選ぶ</b><button data-a="cclose">閉じる</button></div><form id="f-cat"><input id="c-emo" placeholder="絵文字" maxlength="4" autocomplete="off"><input id="c-name" placeholder="新しい種類名(例: ペット用品)" maxlength="20" autocomplete="off" required><button class="pri" type="submit">追加</button></form>
+<div id="cv-body" class="ivb"></div></div></div>
+<div id="iv" hidden><div class="bg"><div class="bh"><b>🕘 買うものの履歴</b><button data-a="iedit" id="iedit">編集</button><button data-a="iclose">閉じる</button></div><div id="iv-body" class="ivb"></div></div></div>
+<datalist id="stores"></datalist>
+<nav><button data-t="list">買い物リスト</button><button data-t="stock">日用品ストック</button><button data-t="route">今日のルート</button></nav>
+
+<script>
+const K='kaimono-rhythm-v1';
+let S={items:[],stock:[],mode:'store',tab:'list',route:[],routeDate:'',note:'',hist:[],catmap:{},ccats:[]};
+try{const r=localStorage.getItem(K);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+S.find=null;
+S.items.forEach(i=>{if(i.n==null){const m=(i.qty||'').match(/^(\d+)\s*(.*)$/);i.n=m?+m[1]:1;i.unit=m?m[2]:(i.qty||'')}});
+if(!S.ihist)S.ihist=Array.from(new Set(S.items.map(i=>i.name))).reverse();
+S.items.concat(S.stock).forEach(x=>{if(x.memo){S.note=(S.note?S.note+'\n':'')+'【'+x.name+'】'+x.memo;delete x.memo}});
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const days=(a,b)=>Math.round((new Date(b+'T12:00')-new Date(a+'T12:00'))/864e5);
+const CATS=[
+['野菜','🥬',/野菜|にんじん|人参|玉ねぎ|たまねぎ|トマト|きゅうり|キャベツ|レタス|じゃがいも|さといも|ねぎ|ほうれん草|なす|ピーマン|大根|ブロッコリー|もやし|きのこ|しいたけ|ごぼう|小松菜|かぼちゃ|さつまいも|れんこん|白菜|にら|セロリ/],
+['果物','🍎',/果物|りんご|バナナ|みかん|いちご|ぶどう|レモン|すいか|メロン|キウイ|オレンジ|グレープフルーツ/],
+['肉・魚','🥩',/肉|豚|鶏|牛(?!乳)|ひき|魚|鮭|さば|ぶり|えび|刺身|ベーコン/],
+['乳製品・卵','🥛',/牛乳|ヨーグルト|チーズ|卵|たまご|バター/],
+['豆腐・加工品','🥢',/豆腐|納豆|ハム|ソーセージ|こんにゃく|練り物|かまぼこ/],
+['主食・乾物','🍚',/米|パン|麺|パスタ|うどん|そば|シリアル|のり|海苔/],
+['調味料・ソース','🧂',/醤油|しょうゆ|味噌|みそ|塩|砂糖|油|酢|ソース|マヨ|ケチャップ|だし/],
+['飲料・お菓子','🥤',/お茶|水|ジュース|コーヒー|ビール|酒|お菓子|チョコ|アイス/],
+['日用品','🧻',/トイレット|ティッシュ|洗剤|シャンプー|リンス|歯|ゴミ袋|ラップ|柔軟剤|石け|ソープ|スポンジ|電池/],
+['薬','💊',/薬|くすり|クスリ|錠|サプリ|ビタミン|絆創膏|ばんそうこう|湿布|目薬|胃腸|頭痛|風邪|消毒|包帯/],
+['その他','🛒',/$^/]];
+const EM=[[/にんじん|人参/,'🥕'],[/玉ねぎ|たまねぎ/,'🧅'],[/トマト/,'🍅'],[/きゅうり/,'🥒'],[/キャベツ|レタス/,'🥬'],[/じゃがいも/,'🥔'],[/りんご/,'🍎'],[/バナナ/,'🍌'],[/みかん/,'🍊'],[/いちご/,'🍓'],[/牛乳/,'🥛'],[/ヨーグルト/,'🥣'],[/チーズ/,'🧀'],[/卵|たまご/,'🥚'],[/パン/,'🍞'],[/米/,'🍚'],[/麺|パスタ|うどん/,'🍝'],[/魚|鮭|さば/,'🐟'],[/えび/,'🍤'],[/肉|豚|牛|鶏|ひき/,'🥩'],[/トイレット/,'🧻'],[/洗剤|柔軟剤/,'🧴'],[/シャンプー|リンス/,'🧴'],[/歯/,'🪥'],[/コーヒー/,'☕'],[/ビール/,'🍺']];
+const hira=s=>s.replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-96));
+let HR=[];
+const BASE=CATS.slice();
+function syncCats(){CATS.length=0;BASE.slice(0,-1).forEach(c=>CATS.push(c));(S.ccats||[]).forEach(c=>CATS.push([c.l,c.e,/$^/]));CATS.push(BASE[BASE.length-1]);HR=CATS.map(c=>new RegExp(hira(c[2].source)))}
+syncCats();
+const catOf=n=>{const o=(S.catmap||{})[n];if(o){const j=CATS.findIndex(c=>c[0]===o);if(j>=0)return j}const h=hira(n),i=CATS.findIndex((c,k)=>c[2].test(n)||HR[k].test(h));return i<0?CATS.length-1:i};
+const catByWord=w=>{w=(w||'').trim();if(!w)return -1;return CATS.findIndex((c,k)=>c[0]!=='その他'&&(c[0].split('・').some(p=>p===w||(w.length>=2&&p.includes(w)))||c[2].test(w)||HR[k].test(hira(w))))};
+function parseName(raw){
+  for(const re of [/^(.+?)\s*[\(（\[【]([^\)）\]】]+)[\)）\]】]\s*$/,/^(.+?)\s*(?:これは|は|[:：=＝])\s*(.+?)\s*(?:です|だよ|だ)?$/]){
+    const m=raw.match(re);if(m){const k=catByWord(m[2]);if(k>=0)return{name:m[1].trim(),cat:k}}}
+  return{name:raw,cat:-1}}
+const PRIOR=['野菜','肉・魚','乳製品・卵','日用品','調味料・ソース','飲料・お菓子','果物','主食・乾物','豆腐・加工品','薬'];
+function catRank(){const cnt={};(S.ihist||[]).forEach(n=>{const l=CATS[catOf(n)][0];cnt[l]=(cnt[l]||0)+1});
+  const pr=k=>{const i=PRIOR.indexOf(CATS[k][0]);return i<0?99:i};
+  return CATS.map((c,k)=>k).sort((a,b)=>(cnt[CATS[b][0]]||0)-(cnt[CATS[a][0]]||0)||pr(a)-pr(b))}
+const emoji=n=>{const e=EM.find(x=>x[0].test(n));return e?e[1]:CATS[catOf(n)][1]};
+const msg=t=>{$('#msg').textContent=t;clearTimeout(msg.t);msg.t=setTimeout(()=>$('#msg').textContent='',4000)};
+
+function remember(n){n=(n||'').trim();if(!n)return;S.hist=[n].concat((S.hist||[]).filter(x=>x!==n)).slice(0,40)}
+function rememberItem(n){n=(n||'').trim();if(!n)return;S.ihist=[n].concat((S.ihist||[]).filter(x=>x!==n)).slice(0,120)}
+function addItem(name,store,qty,sid,pri,cat){
+  name=name.trim();const pn=parseName(name);name=pn.name;if(!name)return;if(cat)S.catmap[name]=cat;else if(pn.cat>=0)S.catmap[name]=CATS[pn.cat][0];remember(store);const q=(qty||'').trim().match(/^(\d+)\s*(.*)$/);if(!sid)rememberItem(name);
+  S.items.push({id:uid(),name,store:(store||'').trim(),n:q?Math.min(99,+q[1]||1):1,unit:q?q[2]:(qty||'').trim(),done:false,sid:sid||null,pri:pri||'later'});
+}
+function bought(sid){
+  const s=S.stock.find(x=>x.id===sid);if(!s)return;
+  const gap=days(s.last,today());
+  if(gap>=3)s.interval=Math.max(1,Math.round((s.interval+gap)/2));
+  s.last=today();
+}
+const left=s=>s.interval-days(s.last,today());
+const inList=s=>S.items.some(i=>i.sid===s.id&&!i.done);
+
+function row(i){
+  const q=encodeURIComponent(i.name);
+  return `<div class="row${i.done?' done':''}"><button class="chk" data-a="tog" data-id="${i.id}" aria-label="チェック">${i.done?'✓':''}</button><span class="em">${emoji(i.name)}</span><div class="nm">${esc(i.name)}${S.mode==='cat'?(i.store?` <small class="tag">${esc(i.store)}</small>`:''):` <small class="tag">${CATS[catOf(i.name)][1]} ${CATS[catOf(i.name)][0]}</small>`}${i.sid?' <small class="tag">定期</small>':''}<div class="qt"><button class="qb" data-a="qm" data-id="${i.id}" aria-label="減らす">−</button><span class="qn">${i.n||1}</span><button class="qb" data-a="qp" data-id="${i.id}" aria-label="増やす">＋</button>${i.unit?`<small>${esc(i.unit)}</small>`:''}</div></div><button class="pri-b${i.pri==='now'?' on':''}" data-a="pri" data-id="${i.id}" aria-label="すぐ">⚡</button><button class="ic" data-a="find" data-id="${i.id}" aria-label="ネットで探す">🔍</button><button class="ic" data-a="del" data-id="${i.id}" aria-label="削除">✕</button></div>`+
+  (S.find===i.id?`<div class="find"><a href="https://www.amazon.co.jp/s?k=${q}" target="_blank" rel="noopener">Amazon</a><a href="https://search.rakuten.co.jp/search/mall/${q}/" target="_blank" rel="noopener">楽天市場</a></div>`:'');
+}
+function renderList(){
+  const open=S.items.filter(i=>!i.done),done=S.items.filter(i=>i.done);
+  const grp=a=>{const g={};a.forEach(i=>{const k=S.mode==='store'?(i.store||'お店未指定'):catOf(i.name);(g[k]=g[k]||[]).push(i)});
+    const keys=Object.keys(g);if(S.mode==='cat')keys.sort((x,y)=>x-y);else Object.values(g).forEach(v=>v.sort((x,y)=>catOf(x.name)-catOf(y.name)));
+    return keys.map(k=>`<h3>${S.mode==='cat'?CATS[k][1]+' '+CATS[k][0]:esc(k)}</h3>`+g[k].map(row).join('')).join('')};
+  const nw=open.filter(i=>i.pri==='now'),lt=open.filter(i=>i.pri!=='now');
+  let h=(nw.length?`<h2>⚡ すぐ(${nw.length})</h2>`+grp(nw):'')+(lt.length?(nw.length?`<h2 class="lt">あとで(${lt.length})</h2>`:'')+grp(lt):'');
+  if(!open.length)h=`<div class="empty">買うものを追加しましょう。<br>🎤を押して「スーパーでヨーグルトとにんじん3本」のように話しても入ります。</div>`;
+  if(done.length)h+=`<h3>買った(${done.length})</h3>`+done.map(row).join('')+`<button class="clr" data-a="clear">買ったものを消す</button>`;
+  $('#list').innerHTML=h;
+}
+function renderStock(){
+  const arr=S.stock.slice().sort((a,b)=>left(a)-left(b));
+  const due=arr.filter(s=>left(s)<=3&&!inList(s));
+  $('#ban').innerHTML=due.length?`<div class="ban">そろそろ ${due.length}件<button data-a="dueall">まとめてリストへ</button></div>`:'';
+  $('#stock').innerHTML=arr.length?arr.map(s=>{const l=left(s);
+    const st=l<0?`${-l}日超過`:l===0?'今日あたり':`あと${l}日`;
+    return `<div class="row"><span class="em">${emoji(s.name)}</span><div class="nm">${esc(s.name)}<br><small class="stat${l<=3?' due':''}">${st}</small> <small>約${s.interval}日ごと</small></div><button class="sm${l<=3&&!inList(s)?' go':''}" data-a="toList" data-id="${s.id}"${inList(s)?' disabled':''}>${inList(s)?'リスト入り':'リストへ'}</button><button class="sm" data-a="buy" data-id="${s.id}">買った</button><button class="ic" data-a="sdel" data-id="${s.id}" aria-label="削除">✕</button></div>`}).join(''):`<div class="empty">トイレットペーパーや洗剤など、定期的に買うものを登録すると、買う時期が近づいたらお知らせします。買うたびに間隔が自動で調整されます。</div>`;
+}
+function renderRoute(){
+  const R=S.route,at=s=>S.items.filter(i=>i.store===s);
+  let h=R.length?R.map((s,n)=>{const a=at(s),d=a.filter(i=>i.done).length;
+    return `<div class="stop${a.length&&d===a.length?' fin':''}"><div class="sh"><span class="sn">${n+1}</span><b>${esc(s)}</b><small>${a.length?d+'/'+a.length:'用事のみ'}</small><button class="ic" data-a="rup" data-i="${n}" aria-label="上へ">↑</button><button class="ic" data-a="rdn" data-i="${n}" aria-label="下へ">↓</button><button class="ic" data-a="rdel" data-i="${n}" aria-label="外す">✕</button></div>${a.map(row).join('')}</div>`}).join('')
+   :`<div class="empty">今日行く場所を、下の候補か入力欄から追加してください。↑↓で回る順番を並べ替えられます。</div>`;
+  if(R.length)h+=`<a class="maps" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&amp;destination=${encodeURIComponent(R[R.length-1])}${R.length>1?'&amp;waypoints='+encodeURIComponent(R.slice(0,-1).join('|')):''}">この順でマップを開く</a>`;
+  const rest=[...new Set(S.items.filter(i=>!i.done&&i.store).map(i=>i.store))].filter(s=>!R.includes(s));
+  if(rest.length)h+=`<h3>リストにある場所から追加</h3><div class="chips">${rest.map(s=>`<button data-a="radd" data-s="${esc(s)}">${S.items.some(i=>i.store===s&&!i.done&&i.pri==='now')?'⚡ ':''}${esc(s)}</button>`).join('')}</div>`;
+  let hp='';
+  if(HS){const q=$('#r-name').value.trim(),hl=(S.hist||[]).filter(x=>!R.includes(x)&&x.includes(q));
+    hp=`<div id="hist">${hl.length?`<div class="hl">${hl.map(x=>`<span class="hc"><button data-a="radd" data-s="${esc(x)}">${esc(x)}</button><button class="hx" data-a="hdel" data-s="${esc(x)}" aria-label="履歴から削除">×</button></span>`).join('')}</div>`:'<small>履歴はまだありません</small>'}</div>`}
+  $('#route').innerHTML=hp+h;
+}
+let M={id:null,mode:null},HS=false,IV=false,IE=false,CP=null,FC='';
+function place(x,y){const m=$('#mini'),w=m.offsetWidth||150,h=m.offsetHeight||60;
+  if(x==null){x=innerWidth-w-10;y=innerHeight-h-90}
+  x=Math.max(4,Math.min(innerWidth-w-4,x));y=Math.max(4,Math.min(innerHeight-h-70,y));
+  m.style.left=x+'px';m.style.top=y+'px';S.mpos={x,y}}
+function memoUI(){
+  $('#mini').hidden=M.mode!=='mini';$('#big').hidden=M.mode!=='large';
+  $('#memo-btn').classList.toggle('has',!!S.note);
+  $('#mi-p').textContent=S.note||'(タップして書く)';
+  const ta=$('#bi-ta');if(document.activeElement!==ta)ta.value=S.note;
+  if(M.mode==='mini')place(S.mpos&&S.mpos.x,S.mpos&&S.mpos.y);
+}
+function renderPicker(){
+  $('#cat-btn').textContent=FC?'🏷 '+FC:'🏷 種類';
+  $('#cv').hidden=!CP;if(!CP)return;
+  const cur=CP.mode==='form'?FC:((S.catmap||{})[CP.name]||'');
+  $('#cv-t').textContent=CP.mode==='form'?'🏷 種類を選ぶ':'🏷 '+CP.name+' の種類';
+  $('#cv-body').innerHTML='<div class="hl"><button class="cc'+(cur?'':' on')+'" data-a="cpick" data-c="">✨ 自動</button>'+catRank().map(k=>`<button class="cc${CATS[k][0]===cur?' on':''}" data-a="cpick" data-c="${esc(CATS[k][0])}">${CATS[k][1]} ${CATS[k][0]}</button>`).join('')+'</div>'+((S.ccats||[]).length?'<h3>自分で作った種類</h3><div class="hl">'+S.ccats.map(c=>`<span class="hc"><span class="cl">${esc(c.e)} ${esc(c.l)}</span><button class="hx" data-a="cdel" data-c="${esc(c.l)}" aria-label="この種類を削除">×</button></span>`).join('')+'</div>':'');
+}
+function renderHist(){
+  $('#iv').hidden=!IV;if(!IV)return;
+  $('#iedit').textContent=IE?'完了':'編集';$('#iedit').classList.toggle('on',IE);
+  const inL=new Set(S.items.filter(i=>!i.done).map(i=>i.name)),g={};
+  (S.ihist||[]).filter(n=>!inL.has(n)).forEach(n=>{const k=catOf(n);(g[k]=g[k]||[]).push(n)});
+  const ks=Object.keys(g).sort((a,b)=>a-b);
+  $('#iv-body').innerHTML=(IE?'<small>品名をタップで種類を変更、×で履歴から削除できます</small>':'')+(ks.length?ks.map(k=>`<h3>${CATS[k][1]} ${CATS[k][0]}</h3><div class="hl">${g[k].map(n=>`<span class="hc">${IE?`<button class="hn" data-a="ctag" data-s="${esc(n)}">🏷 ${esc(n)}</button><button class="hx" data-a="idel" data-s="${esc(n)}" aria-label="履歴から削除">×</button>`:`<button class="hn" data-a="iadd" data-s="${esc(n)}">${esc(n)}</button>`}</span>`).join('')}</div>`).join(''):'<div class="empty">履歴はまだありません。買うものを追加すると、ここに種類別で残ります。</div>');
+}
+function autoAdd(){let n=0;
+  S.stock.forEach(s=>{if(left(s)<=0&&s.auto!==s.last){if(!inList(s)){addItem(s.name,'','',s.id,'now');n++}s.auto=s.last}});
+  if(n)msg(`日用品ストックから${n}件をリストに追加しました`)}
+function render(){autoAdd();
+  $('#v-list').hidden=S.tab!=='list';$('#v-stock').hidden=S.tab!=='stock';$('#v-route').hidden=S.tab!=='route';
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab));
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.m===S.mode));
+  $('#stores').innerHTML=[...new Set(S.items.map(i=>i.store).filter(Boolean))].map(s=>`<option value="${esc(s)}">`).join('');
+  renderList();renderStock();renderRoute();memoUI();renderHist();renderPicker();save();
+}
+function parseVoice(t){
+  t=t.replace(/^(帰りに|あと|それと)/,'');let store='';
+  const m=t.match(/^(.*?(?:スーパー|ドラッグストア|コンビニ|薬局|コストコ|マート|店))で(.+)$/);
+  if(m){store=m[1];t=m[2]}
+  const ps=t.split(/と|、|，|,|\s+/).filter(Boolean);
+  ps.forEach(p=>{const q=p.match(/^(.+?)(\d+.{0,2})$/);addItem(q?q[1]:p,store,q?q[2]:'')});
+  msg(`${ps.length}件追加しました:${ps.join('、')}`);render();
+}
+function voice(){
+  const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!R){msg('このブラウザは音声入力に対応していません。キーボードのマイクを使ってください。');return}
+  try{const r=new R();r.lang='ja-JP';r.onresult=e=>parseVoice(e.results[0][0].transcript);r.onerror=()=>msg('音声を聞き取れませんでした。');r.start();msg('話してください…')}catch(e){msg('音声入力を開始できませんでした。')}
+}
+document.addEventListener('click',e=>{
+  if(HS&&!e.target.closest('#hist,#r-name')){HS=false;render()}
+  const t=e.target.closest('[data-t]');if(t){S.tab=t.dataset.t;render();return}
+  const m=e.target.closest('[data-m]');if(m){S.mode=m.dataset.m;render();return}
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a,id=b.dataset.id,it=S.items.find(x=>x.id===id),st=S.stock.find(x=>x.id===id);
+  if(a==='tog'&&it){it.done=!it.done;if(it.done&&it.sid)bought(it.sid)}
+  else if(a==='del')S.items=S.items.filter(x=>x.id!==id);
+  else if(a==='find')S.find=S.find===id?null:id;
+  else if(a==='clear')S.items=S.items.filter(x=>!x.done);
+  else if(a==='voice'){voice();return}
+  else if(a==='toList'&&st)addItem(st.name,'','',st.id);
+  else if(a==='buy'&&st){bought(st.id);S.items.forEach(i=>{if(i.sid===st.id&&!i.done)i.done=true})}
+  else if(a==='sdel')S.stock=S.stock.filter(x=>x.id!==id);
+  else if(a==='dueall')S.stock.filter(s=>left(s)<=3&&!inList(s)).forEach(s=>addItem(s.name,'','',s.id));
+  else if(a==='pri'&&it)it.pri=it.pri==='now'?'later':'now';
+  else if(a==='radd'){const n=b.dataset.s;if(!S.route.includes(n))S.route.push(n);remember(n)}
+  else if(a==='hdel')S.hist=S.hist.filter(x=>x!==b.dataset.s);
+  else if(a==='qm'&&it)it.n=Math.max(1,(it.n||1)-1);
+  else if(a==='qp'&&it)it.n=Math.min(99,(it.n||1)+1);
+  else if(a==='ihist'){IV=true;IE=false}
+  else if(a==='iedit')IE=!IE;
+  else if(a==='iclose'){IV=false;IE=false}
+  else if(a==='iadd')addItem(b.dataset.s,'','',null,'later');
+  else if(a==='idel')S.ihist=S.ihist.filter(x=>x!==b.dataset.s);
+  else if(a==='cform')CP={mode:'form'};
+  else if(a==='ctag')CP={mode:'hist',name:b.dataset.s};
+  else if(a==='cclose')CP=null;
+  else if(a==='cdel'){const c=b.dataset.c;if(confirm('「'+c+'」を削除しますか?この種類を指定した品は自動判定に戻ります。')){S.ccats=S.ccats.filter(x=>x.l!==c);Object.keys(S.catmap).forEach(k=>{if(S.catmap[k]===c)delete S.catmap[k]});if(FC===c)FC='';syncCats()}}
+  else if(a==='cpick'&&CP){const c=b.dataset.c;if(CP.mode==='form')FC=c;else if(c)S.catmap[CP.name]=c;else delete S.catmap[CP.name];CP=null}
+  else if(a==='rdel')S.route.splice(+b.dataset.i,1);
+  else if(a==='rup'||a==='rdn'){const n=+b.dataset.i,m=a==='rup'?n-1:n+1;if(m>=0&&m<S.route.length)[S.route[n],S.route[m]]=[S.route[m],S.route[n]]}
+  else if(a==='memo')M.mode='large';
+  else if(a==='mmin')M.mode='mini';
+  else if(a==='mclose')M.mode=null;
+  render();if(a==='memo')$('#bi-ta').focus();
+});
+$('#f-add').addEventListener('submit',e=>{e.preventDefault();addItem($('#a-name').value,$('#a-store').value,$('#a-qty').value,null,$('#a-now').checked?'now':'later',FC);FC='';$('#a-name').value='';$('#a-qty').value='';$('#a-now').checked=false;render();$('#a-name').focus()});
+$('#s-last').value=today();
+$('#f-stock').addEventListener('submit',e=>{e.preventDefault();const n=$('#s-name').value.trim();if(!n)return;
+  S.stock.push({id:uid(),name:n,interval:Math.max(1,parseInt($('#s-int').value)||30),last:$('#s-last').value||today()});
+  $('#s-name').value='';render()});
+$('#bi-ta').addEventListener('input',e=>{S.note=e.target.value;save();});
+$('#big').addEventListener('click',e=>{if(e.target.id==='big'){M.mode='mini';render()}});
+let drag=null;const mini=$('#mini');
+mini.addEventListener('pointerdown',e=>{drag={sx:e.clientX,sy:e.clientY,ox:mini.offsetLeft,oy:mini.offsetTop,moved:false};mini.setPointerCapture(e.pointerId)});
+mini.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>6)drag.moved=true;if(drag.moved)place(drag.ox+dx,drag.oy+dy)});
+mini.addEventListener('pointerup',()=>{if(drag&&!drag.moved){M.mode='large';render();$('#bi-ta').focus()}else save();drag=null});
+mini.addEventListener('pointercancel',()=>{drag=null});
+$('#f-route').addEventListener('submit',e=>{e.preventDefault();const n=$('#r-name').value.trim();if(n&&!S.route.includes(n))S.route.push(n);remember(n);HS=false;$('#r-name').value='';render()});
+$('#r-name').addEventListener('focus',()=>{HS=true;render()});
+$('#r-name').addEventListener('input',()=>{HS=true;render()});
+$('#f-cat').addEventListener('submit',e=>{e.preventDefault();if(!CP)return;const n=$('#c-name').value.trim();if(!n)return;
+  if(!CATS.some(c=>c[0]===n)){S.ccats.push({l:n,e:$('#c-emo').value.trim()||'🏷'});syncCats()}
+  if(CP.mode==='form')FC=n;else S.catmap[CP.name]=n;
+  $('#c-name').value='';$('#c-emo').value='';CP=null;render()});
+$('#cv').addEventListener('click',e=>{if(e.target.id==='cv'){CP=null;render()}});
+$('#iv').addEventListener('click',e=>{if(e.target.id==='iv'){IV=false;IE=false;render()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+if(S.routeDate!==today()){S.route=[];S.routeDate=today()}
+render();
+</script>
+</body>
+</html>
